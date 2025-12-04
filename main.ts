@@ -7,17 +7,10 @@ async function main() {
   const chatId = Deno.env.get("TELEGRAM_CHAT_ID");
   const apiUrl = Deno.env.get("LALAFO_API_URL");
 
-  if (!token) {
-    console.error("Missing TELEGRAM_BOT_TOKEN env var");
-    Deno.exit(1);
-  }
-  if (!chatId) {
-    console.error("Missing TELEGRAM_CHAT_ID env var");
-    Deno.exit(1);
-  }
-  if (!apiUrl) {
-    console.error("Missing LALAFO_API_URL env var");
-    Deno.exit(1);
+  if (!token || !chatId || !apiUrl) {
+    console.error("Missing required env vars. Need TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, LALAFO_API_URL");
+    // On Deno Deploy Deno.exit is not allowed, so just stop execution.
+    return;
   }
 
   const state = await loadState();
@@ -34,7 +27,6 @@ async function main() {
       console.log("Sending ad", ad.id, ad.title);
       await sendAdToTelegram(ad, token, chatId);
       state.sentIds.push(ad.id);
-      // small delay to be nice to Telegram
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (err) {
       console.error("Failed to send ad", ad.id, err);

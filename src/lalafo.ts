@@ -11,9 +11,6 @@ import {
  * This module expects Lalafo JSON search API.
  * You must provide full URL in env LALAFO_API_URL.
  * The URL should return an object with `items` array.
- *
- * Because Lalafo may change their API, adjust `mapItemToAd`
- * to match real field names if something breaks.
  */
 
 interface RawLalafoItem {
@@ -72,7 +69,6 @@ function extractPrice(item: RawLalafoItem): { price: number | null; currency: st
   if (typeof item.price === "number") {
     return { price: item.price, currency: item.currency ?? "KGS" };
   }
-  // fallback: try parse from price_string
   if (typeof item.price_string === "string") {
     const digits = item.price_string.replace(/[^0-9]/g, "");
     if (digits) {
@@ -86,7 +82,6 @@ function extractPrice(item: RawLalafoItem): { price: number | null; currency: st
 }
 
 function extractRooms(item: RawLalafoItem): number | null {
-  // Try attributes-based extraction
   if (Array.isArray(item.attributes)) {
     for (const attr of item.attributes) {
       if (!attr) continue;
@@ -105,7 +100,6 @@ function extractRooms(item: RawLalafoItem): number | null {
     }
   }
 
-  // Fallback: try parse from title or description
   const source = `${item.title ?? ""} ${item.description ?? ""}`.toLowerCase();
   const match = source.match(/(\d+)\s*комнат/);
   if (match) {
@@ -152,7 +146,6 @@ function extractImages(item: RawLalafoItem): string[] {
     }
   }
 
-  // uniq
   return Array.from(new Set(urls));
 }
 
