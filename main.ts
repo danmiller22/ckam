@@ -8,8 +8,7 @@ async function main() {
   const apiUrl = Deno.env.get("LALAFO_API_URL");
 
   if (!token || !chatId || !apiUrl) {
-    console.error("Missing required env vars. Need TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, LALAFO_API_URL");
-    // On Deno Deploy Deno.exit is not allowed, so just stop execution.
+    console.error("Missing env vars: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, LALAFO_API_URL");
     return;
   }
 

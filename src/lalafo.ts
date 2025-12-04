@@ -7,12 +7,6 @@ import {
   OWNER_ONLY,
 } from "./config.ts";
 
-/**
- * This module expects Lalafo JSON search API.
- * You must provide full URL in env LALAFO_API_URL.
- * The URL should return an object with `items` array.
- */
-
 interface RawLalafoItem {
   id?: number | string;
   title?: string;
@@ -32,7 +26,6 @@ interface RawLalafoItem {
   photos?: string[];
   url?: string;
   link?: string;
-  params?: Record<string, unknown>;
   attributes?: { slug?: string; value?: string | number }[];
 }
 
@@ -187,13 +180,8 @@ function mapItemToAd(item: RawLalafoItem): Ad | null {
 }
 
 function passesFilters(ad: Ad): boolean {
-  if (ad.city !== CITY_NAME) {
-    return false;
-  }
-
-  if (!ad.district) {
-    return false;
-  }
+  if (ad.city !== CITY_NAME) return false;
+  if (!ad.district) return false;
 
   if (ad.rooms == null || ad.rooms < MIN_ROOMS || ad.rooms > MAX_ROOMS) {
     return false;
@@ -203,21 +191,11 @@ function passesFilters(ad: Ad): boolean {
     return false;
   }
 
-  if (!ad.phone) {
-    return false;
-  }
+  if (!ad.phone) return false;
+  if (!ad.imageUrls || ad.imageUrls.length === 0) return false;
+  if (!ad.url) return false;
 
-  if (!ad.imageUrls || ad.imageUrls.length === 0) {
-    return false;
-  }
-
-  if (!ad.url) {
-    return false;
-  }
-
-  if (OWNER_ONLY && ad.isOwner !== true) {
-    return false;
-  }
+  if (OWNER_ONLY && ad.isOwner !== true) return false;
 
   return true;
 }
@@ -244,9 +222,7 @@ export async function fetchFilteredAds(apiUrl: string): Promise<Ad[]> {
   for (const raw of items) {
     const ad = mapItemToAd(raw);
     if (!ad) continue;
-    if (passesFilters(ad)) {
-      ads.push(ad);
-    }
+    if (passesFilters(ad)) ads.push(ad);
   }
 
   return ads;

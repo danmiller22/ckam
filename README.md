@@ -1,29 +1,25 @@
-# Lalafo → Telegram (Deno bot)
+# Lalafo → Telegram (Deno Deploy friendly)
 
-Работает и как:
-- GitHub Actions cron-скрипт;
-- Deno Deploy (использует KV вместо файловой системы).
+Минимальный вариант под Deno Deploy:
+
+- нет файловой записи и KV;
+- состояние между запусками не сохраняется (возможны дубли, если Lalafo возвращает те же объявления).
 
 Фильтры:
 
-- город: только Бишкек
+- город: Бишкек
 - 1–2 комнаты
 - цена ≤ 50 000 KGS
 - только собственник
 - обязательно: район, телефон, фото, ссылка.
 
-### Переменные окружения
+Переменные окружения:
 
-- `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
-- `LALAFO_API_URL`
+- TELEGRAM_BOT_TOKEN
+- TELEGRAM_CHAT_ID
+- LALAFO_API_URL
 
-### Состояние (без дублей)
-
-- На **GitHub Actions / локально** — файл `data/state.json`.
-- На **Deno Deploy** — `Deno KV` (ключ `["state", "sentIds"]`).
-
-### Локальный запуск
+Локальный запуск:
 
 ```bash
 deno task run
