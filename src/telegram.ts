@@ -46,7 +46,7 @@ function buildCaption(ad: Ad): string {
   if (ad.isOwner === true) {
     lines.push("Тип предложения: Собственник");
   } else if (ad.isOwner === false) {
-    lines.push("Тип предложения: Посредник`);
+    lines.push("Тип предложения: Посредник");
   }
 
   lines.push("");
